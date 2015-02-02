@@ -13,27 +13,27 @@
 - (id)initWithCoder:(NSCoder*)aDecoder
 {
     self = [super initWithCoder:aDecoder];
-    if (self) {
-        [self initThirdLine];
-    }
+    
+    if (self) [self initThirdLine];
+    
     return self;
 }
 
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
-    if (self) {
-        [self initThirdLine];
-    }
+    
+    if (self) [self initThirdLine];
+    
     return self;
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString*)reuseIdentifier
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
-        [self initThirdLine];
-    }
+    
+    if (self) [self initThirdLine];
+    
     return self;
 }
 
