@@ -76,8 +76,8 @@
 
 - (void)dealloc
 {
-	if (self.beacon.isConnected) {
-		[self.beacon disconnectBeacon];
+	if (self.beacon.connectionStatus == ESTConnectionStatusConnected) {
+		[self.beacon disconnect];
 	}
 	self.beacon.delegate = nil;
 }
@@ -89,10 +89,10 @@
 
 -(void)viewWillAppear:(BOOL)animated
 {
-	if (!self.beacon.isConnected) {
+	if (self.beacon.connectionStatus == ESTConnectionStatusDisconnected) {
 		self.beacon.delegate = self;
 		[self increaseAsyncAction];
-		[self.beacon connectToBeacon];
+		[self.beacon connect];
 	}
 }
 
@@ -158,17 +158,8 @@
 - (IBAction)checkFirmwareUpdateAction:(id)sender
 {
 	[self increaseAsyncAction];
-	[self.beacon checkFirmwareUpdateWithCompletion:^(BOOL updateAvailable, ESTBeaconUpdateInfo *updateInfo, NSError *error) {
-//		if (error) {
-//			UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Impossible to check firmware update availability"
-//															 message:[error localizedDescription]
-//															delegate:self
-//												   cancelButtonTitle:@"OK"
-//												   otherButtonTitles:nil];
-//			
-//			[alert show];
-//		}
-		self.updateFirmwareButton.enabled = updateAvailable;
+    [self.beacon checkFirmwareUpdateWithCompletion:^(ESTFirmwareInfoVO *result, NSError *error) {
+		self.updateFirmwareButton.enabled = result.isUpdateAvailable;
 		[self decreaseAsyncAction];
 	}];
 }
@@ -275,10 +266,10 @@
 - (IBAction)updateFirmware:(id)sender
 {
     [self increaseAsyncAction];
-	[self.beacon updateBeaconFirmwareWithProgress:^(NSString *value, NSError *error) {
-        NSLog(@"Updating %@", value);
+    [self.beacon updateFirmwareWithProgress:^(NSInteger value, NSString *description, NSError *error) {
+        NSLog(@"Updating %ld", (long)value);
     }
-									andCompletion:^(NSError *error) {
+									completion:^(NSError *error) {
 										if (error) {
 											UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Estimote update error"
 																							 message:[error localizedDescription]
@@ -298,7 +289,7 @@
 - (void)editPowerLevelWithValue:(ESTBeaconPower)powerLevel
 {
 	[self increaseAsyncAction];
-	[self.beacon writeBeaconPower:powerLevel withCompletion:^(ESTBeaconPower value, NSError *error) {
+	[self.beacon writePower:powerLevel completion:^(ESTBeaconPower value, NSError *error) {
 		if (error) {
 			UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Estimote write error"
 															 message:[error localizedDescription]
@@ -322,7 +313,7 @@
 	NSNumber* number = [formatter numberFromString:majorString];
 
 	[self increaseAsyncAction];
-	[self.beacon writeBeaconMajor:[number unsignedShortValue] withCompletion:^(unsigned short value, NSError* error) {
+	[self.beacon writeMajor:[number unsignedShortValue] completion:^(unsigned short value, NSError* error) {
 		if (error) {
 			UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Estimote write error"
 															 message:[error localizedDescription]
@@ -346,7 +337,7 @@
 	NSNumber* number = [formatter numberFromString:minorString];
 	
 	[self increaseAsyncAction];
-	[self.beacon writeBeaconMinor:[number unsignedShortValue] withCompletion:^(unsigned short value, NSError* error) {
+	[self.beacon writeMinor:[number unsignedShortValue] completion:^(unsigned short value, NSError* error) {
 		if (error) {
 			UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Estimote write error"
 															 message:[error localizedDescription]
@@ -370,7 +361,7 @@
 	NSNumber* number = [formatter numberFromString:frequencyString];
 	
 	[self increaseAsyncAction];
-	[self.beacon writeBeaconAdvInterval:[number unsignedShortValue] withCompletion:^(unsigned short value, NSError *error) {
+	[self.beacon writeAdvInterval:[number unsignedShortValue] completion:^(unsigned short value, NSError *error) {
 		if (error) {
 			UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Estimote write error"
 															 message:[error localizedDescription]
