@@ -47,15 +47,15 @@
 	
 	CGFloat xCircleCenter = baseMetric * 2/3;
 	
-	CGFloat imediateSide = baseMetric*2;
-	CGFloat nearSide = imediateSide*2;
-	CGFloat farSide = nearSide*2;
+	CGFloat imediateSide = baseMetric * 2;
+	CGFloat nearSide = imediateSide * 2;
+	CGFloat farSide = nearSide * 2;
 	
 	CGRect deviceRect = CGRectZero;
-	deviceRect.size.width = imediateSide/5;
-	deviceRect.size.height = imediateSide/3;
-	deviceRect.origin.x = xCircleCenter - deviceRect.size.width/2;
-	deviceRect.origin.y = yMiddle - deviceRect.size.height/2;
+	deviceRect.size.width = imediateSide / 5;
+	deviceRect.size.height = imediateSide / 3;
+	deviceRect.origin.x = xCircleCenter - deviceRect.size.width / 2;
+	deviceRect.origin.y = yMiddle - deviceRect.size.height / 2;
 	
 	CGFloat beaconSide = deviceRect.size.width;
 	
@@ -65,7 +65,7 @@
 		default:
 			break;
 		case CLProximityUnknown:
-			xBeacon += farSide/2 + baseMetric/2;
+			xBeacon += farSide / 2 + baseMetric / 2;
 			break;
 			
 		case CLProximityFar:
